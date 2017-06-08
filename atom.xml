@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-03-02T02:08:40.000Z</updated>
+  <updated>2017-04-10T07:59:40.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,19 +16,27 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>shiny第一篇博客</title>
-    <link href="http://yoursite.com/2017/03/02/shiny%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/"/>
-    <id>http://yoursite.com/2017/03/02/shiny第一篇博客/</id>
-    <published>2017-03-02T02:06:34.000Z</published>
-    <updated>2017-03-02T02:08:40.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>你好 欢迎来到我的技术博客</p>
-]]></content>
+    <title>自动集成</title>
+    <link href="http://yoursite.com/2017/04/10/%E8%87%AA%E5%8A%A8%E9%9B%86%E6%88%90/"/>
+    <id>http://yoursite.com/2017/04/10/自动集成/</id>
+    <published>2017-04-10T07:59:40.000Z</published>
+    <updated>2017-04-10T07:59:40.000Z</updated>
     
     <summary type="html">
     
-      &lt;p&gt;你好 欢迎来到我的技术博客&lt;/p&gt;
-
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>LLVM</title>
+    <link href="http://yoursite.com/2017/04/10/LLVM/"/>
+    <id>http://yoursite.com/2017/04/10/LLVM/</id>
+    <published>2017-04-10T07:31:28.000Z</published>
+    <updated>2017-04-10T07:31:28.000Z</updated>
+    
+    <summary type="html">
     
     </summary>
     
