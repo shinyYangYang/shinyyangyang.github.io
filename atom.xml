@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-08T08:10:39.000Z</updated>
+  <updated>2017-06-08T08:24:56.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://yoursite.com/2017/06/08/runtime%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
     <id>http://yoursite.com/2017/06/08/runtime在项目中的使用/</id>
     <published>2017-06-08T08:00:33.000Z</published>
-    <updated>2017-06-08T08:10:39.000Z</updated>
+    <updated>2017-06-08T08:24:56.000Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="runtime在项目中的运用"><a href="#runtime在项目中的运用" class="headerlink" title="runtime在项目中的运用"></a>runtime在项目中的运用</h1><h2 id="实现NSCoding协议方法"><a href="#实现NSCoding协议方法" class="headerlink" title="实现NSCoding协议方法"></a>实现NSCoding协议方法</h2><blockquote>
+    <content type="html"><![CDATA[<h2 id="实现NSCoding协议方法"><a href="#实现NSCoding协议方法" class="headerlink" title="实现NSCoding协议方法"></a>实现NSCoding协议方法</h2><blockquote>
 <p>在归档自定义的对象时候, 需要自己实现NSCoding协议, 该协议有两个方法需要实现:</p>
 </blockquote>
 <pre><code>@protocol NSCoding
@@ -30,13 +30,13 @@
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder; // NS_DESIGNATED_INITIALIZER
 @end
 </code></pre><p>  默认为<code>@required</code> 的, 通常我们的办法是去每个属性都去写一遍, 比如这样:</p>
-<pre><code>-(void)encodeWithCoder:(NSCoder *)aCoder
+<pre><code>- (void)encodeWithCoder:(NSCoder *)aCoder
 {
-     [aCoder encodeObject:self.name forKey:@&quot;name&quot;];
-       [aCoder encodeObject:self.ID forKey:@&quot;ID&quot;];
-}
+    [aCoder encodeObject:self.name forKey:@&quot;name&quot;];
+    [aCoder encodeObject:self.ID forKey:@&quot;ID&quot;];
+}    
 
--(id)initWithCoder:(NSCoder *)aDecoder
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
    if (self = [super init]) {
        self.name = [aDecoder decodeObjectForKey:@&quot;name&quot;];
@@ -95,11 +95,13 @@ struct objc_ivar {
 }                                                            OBJC2_UNAVAILABLE;
 </code></pre><p>一个Ivar的结构体中保存着<em>变量名称</em> 、变量类型、偏移量. 我们在意的就是需要获取到名字，runtime给我们提供了<code>ivar_getName()</code>函数可以获取到.</p>
 <p>然后通过KVC获取到属性变量的值,<br><code>id value = [self valueForKey:propertyNameString];</code> </p>
+<p><strong>通过测试当属性为<code>NSInteger</code> 或者 <code>int</code> 类型时候一样能使用, 暂时没有发现这样使用存在的问题</strong></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;runtime在项目中的运用&quot;&gt;&lt;a href=&quot;#runtime在项目中的运用&quot; class=&quot;headerlink&quot; title=&quot;runtime在项目中的运用&quot;&gt;&lt;/a&gt;runtime在项目中的运用&lt;/h1&gt;&lt;h2 id=&quot;实现NSCoding协议方法&quot;&gt;&lt;
+      &lt;h2 id=&quot;实现NSCoding协议方法&quot;&gt;&lt;a href=&quot;#实现NSCoding协议方法&quot; class=&quot;headerlink&quot; title=&quot;实现NSCoding协议方法&quot;&gt;&lt;/a&gt;实现NSCoding协议方法&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;在归档自定义的对象
     
     </summary>
     
