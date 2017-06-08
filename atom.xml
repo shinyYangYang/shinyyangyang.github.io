@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-08T07:28:30.000Z</updated>
+  <updated>2017-06-08T08:07:12.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,15 +16,13 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://yoursite.com/2017/06/08/runtime%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2017/06/08/runtime项目中的使用/</id>
-    <published>2017-06-08T07:28:30.000Z</published>
-    <updated>2017-06-08T07:28:30.000Z</updated>
+    <title>runtime在项目中的使用</title>
+    <link href="http://yoursite.com/2017/06/08/runtime%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2017/06/08/runtime在项目中的使用/</id>
+    <published>2017-06-08T08:00:33.000Z</published>
+    <updated>2017-06-08T08:07:12.000Z</updated>
     
-    <content type="html"><![CDATA[<p>#runtime在项目中的运用#</p>
-<p>###实现NSCoding协议方法</p>
-<blockquote>
+    <content type="html"><![CDATA[<h1 id="runtime在项目中的运用"><a href="#runtime在项目中的运用" class="headerlink" title="runtime在项目中的运用"></a>runtime在项目中的运用</h1><h2 id="实现NSCoding协议方法"><a href="#实现NSCoding协议方法" class="headerlink" title="实现NSCoding协议方法"></a>实现NSCoding协议方法</h2><blockquote>
 <p>在归档自定义的对象时候, 需要自己实现NSCoding协议, 该协议有两个方法需要实现:</p>
 </blockquote>
 <pre><code>@protocol NSCoding
@@ -101,15 +99,12 @@ struct objc_ivar {
     
     <summary type="html">
     
-      &lt;p&gt;#runtime在项目中的运用#&lt;/p&gt;
-&lt;p&gt;###实现NSCoding协议方法&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;在归档自定义的对象时候, 需要自己实现NSCoding协议, 该协议有两个方法需要实现:&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre&gt;&lt;code&gt;@
+      &lt;h1 id=&quot;runtime在项目中的运用&quot;&gt;&lt;a href=&quot;#runtime在项目中的运用&quot; class=&quot;headerlink&quot; title=&quot;runtime在项目中的运用&quot;&gt;&lt;/a&gt;runtime在项目中的运用&lt;/h1&gt;&lt;h2 id=&quot;实现NSCoding协议方法&quot;&gt;&lt;
     
     </summary>
     
+    
+      <category term="1" scheme="http://yoursite.com/tags/1/"/>
     
   </entry>
   
