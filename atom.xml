@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-08T08:07:12.000Z</updated>
+  <updated>2017-06-08T08:10:39.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/06/08/runtime%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
     <id>http://yoursite.com/2017/06/08/runtime在项目中的使用/</id>
     <published>2017-06-08T08:00:33.000Z</published>
-    <updated>2017-06-08T08:07:12.000Z</updated>
+    <updated>2017-06-08T08:10:39.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="runtime在项目中的运用"><a href="#runtime在项目中的运用" class="headerlink" title="runtime在项目中的运用"></a>runtime在项目中的运用</h1><h2 id="实现NSCoding协议方法"><a href="#实现NSCoding协议方法" class="headerlink" title="实现NSCoding协议方法"></a>实现NSCoding协议方法</h2><blockquote>
 <p>在归档自定义的对象时候, 需要自己实现NSCoding协议, 该协议有两个方法需要实现:</p>
@@ -94,7 +94,7 @@ struct objc_ivar {
 #endif
 }                                                            OBJC2_UNAVAILABLE;
 </code></pre><p>一个Ivar的结构体中保存着<em>变量名称</em> 、变量类型、偏移量. 我们在意的就是需要获取到名字，runtime给我们提供了<code>ivar_getName()</code>函数可以获取到.</p>
-<p>然后通过KVC获取到属性变量的值, <code>id value = [self valueForKey:propertyNameString];</code> </p>
+<p>然后通过KVC获取到属性变量的值,<br><code>id value = [self valueForKey:propertyNameString];</code> </p>
 ]]></content>
     
     <summary type="html">
