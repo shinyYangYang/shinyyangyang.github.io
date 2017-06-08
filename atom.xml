@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>杨平的技术博客</title>
+  <title>如果您发现问题请通知我</title>
   
   <link href="/atom.xml" rel="self"/>
   
@@ -132,26 +132,6 @@ struct objc_ivar {
     <updated>2017-04-10T07:31:28.000Z</updated>
     
     <summary type="html">
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>杨平第一篇博客</title>
-    <link href="http://yoursite.com/2017/03/02/%E6%9D%A8%E5%B9%B3%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AC%AC%E4%B8%80%E7%AF%87/"/>
-    <id>http://yoursite.com/2017/03/02/杨平的博客第一篇/</id>
-    <published>2017-03-02T02:06:34.000Z</published>
-    <updated>2017-03-02T06:19:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>print(“hello”);<br>修改下</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;print(“hello”);&lt;br&gt;修改下&lt;/p&gt;
-
     
     </summary>
     
