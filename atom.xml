@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-13T06:19:20.000Z</updated>
+  <updated>2017-06-13T08:19:01.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/06/12/runtime%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8-%E4%BA%8C-%E8%87%AA%E5%AE%9A%E4%B9%89KVO/"/>
     <id>http://yoursite.com/2017/06/12/runtime在项目中的使用-二-自定义KVO/</id>
     <published>2017-06-12T10:01:30.000Z</published>
-    <updated>2017-06-13T06:19:20.000Z</updated>
+    <updated>2017-06-13T08:19:01.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="KVO的原理"><a href="#KVO的原理" class="headerlink" title="KVO的原理"></a>KVO的原理</h2><p>KVO观察者模式, 指定对象的属性被修改后, KVO就会自动通知相应的观察者. 在项目中的使用步骤可以归纳为三步:</p>
 <ol>
@@ -83,7 +83,7 @@
 </blockquote>
 <pre><code>这里说明下, 方法名称(SEL name) 和 函数指针(IMP imp) 指向的函数名不必一致, 很明显如果要求一致就不会需要两个参数了. 
 </code></pre><p>  接下来就是实现 <code>YYKVO_setter_super</code>函数, 这里我写了两个类似的函数, 区别是一个直接调用<code>objc_msgSendSuper()</code>函数, 一个用<code>objc_msgSend()</code>先看<code>YYKVO_setter</code></p>
-<pre><code>void YYKVO_setter (id self, SEL _cmd, id newName)
+<pre><code>void YYKVO_setter (id self, SEL _cmd, id newValue)
 {
     id class = [self class];
     // 改变self的isa指向super
@@ -96,11 +96,11 @@
 
     // 更该属性的值
     SEL setSelector = NSSelectorFromString(setterName);
-    objc_msgSend(self, setSelector, newName);
+    objc_msgSend(self, setSelector, newValue);
 
     // 调用回调方法
     id observer = objc_getAssociatedObject(self, (__bridge const void *)@&quot;YYKOVObserver&quot;);
-    objc_msgSend(observer, @selector(observeValueForKeyPath:ofObject:change:context:), self, @&quot;name&quot;, @{@&quot;oldValue&quot; : oldValue, @&quot;newValue&quot; : newName}, nil);
+    objc_msgSend(observer, @selector(observeValueForKeyPath:ofObject:change:context:), self, @&quot;name&quot;, @{@&quot;oldValue&quot; : oldValue, @&quot;newValue&quot; : newValue}, nil);
 
     // 更改self的isa指向新创建的子类
     object_setClass(self, class);
@@ -108,7 +108,7 @@
 </code></pre><blockquote>
 <p>改变self的isa指向父类, 所以这时候self就变成了我们指定监测的类了. 最后再换回来<code>object_setClass(self, class);</code>不然self的指针还是指向父类, 当下次属性在发生改变时候, 就不会调用我们指定的setter方法了.</p>
 </blockquote>
-<pre><code>void YYKVO_setter_super (id self, SEL _cmd, id newName)
+<pre><code>void YYKVO_setter_super (id self, SEL _cmd, id newValue)
 {
     NSString *setterName = NSStringFromSelector(_cmd);
     NSString *getName = getterForSetter(setterName);
@@ -120,10 +120,10 @@
         .receiver = self,
         .super_class = class_getSuperclass([self class])
     };
-    objc_msgSendSuper(&amp;superClass, _cmd, newName);
+    objc_msgSendSuper(&amp;superClass, _cmd, newValue);
 
     id observer = objc_getAssociatedObject(self, (__bridge const void *)@&quot;YYKOVObserver&quot;);
-    objc_msgSend(observer, @selector(observeValueForKeyPath:ofObject:change:context:), self , @&quot;name&quot;, @{@&quot;oldValue&quot; : oldValue, @&quot;newValue&quot; : newName}, nil);
+    objc_msgSend(observer, @selector(observeValueForKeyPath:ofObject:change:context:), self , @&quot;name&quot;, @{@&quot;oldValue&quot; : oldValue, @&quot;newValue&quot; : newValue}, nil);
 }
 </code></pre><blockquote>
 <p>没有去改变self的isa指针, 而是直接使用了<code>objc_msgSendSuper()</code>函数, 这个函数需要传入一个结构体就是我们组建的superClass结构体. <code>objc_super</code> : Specifies the superclass of an instance. 里面包含两个元素:</p>
@@ -155,7 +155,55 @@ if (observeValueForKeyPathMethod) {
 <p>就是这个意思啊, 肯定苹果还干了很多别的事. </p>
 </blockquote>
 <p>有两个函数<code>setterForGetter()</code> 和 <code>getterForSetter()</code> 我用了硬编码的方式实现了, 肯定是能优化的. 在最后我会写出来. </p>
-<p>####用block的方式<br>其实原理很简单, 上面我们关联了一个对象observer, 现在我们observer 和 传入的block一起关联保存下来, 在setter方法中调用block.</p>
+<h2 id="用block的方式"><a href="#用block的方式" class="headerlink" title="用block的方式:"></a>用block的方式:</h2><p>其实原理很简单, 上面我们关联了一个对象observer, 现在我们observer 和 传入的block一起关联保存下来, 在setter方法中调用block.</p>
+<pre><code>- (void)YYKVO_addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath withBlock:(YYObserverBlock)block
+{
+    SEL setterSelector = NSSelectorFromString(setterForGetter(keyPath));
+    Method setterMethod = class_getInstanceMethod([self class], setterSelector);
+    if (!setterMethod) {
+        NSLog(@&quot;没有找到set方法, 所以可能没有该属性, 无法绑定&quot;);
+        return;
+    }
+    NSString *oldClassName = NSStringFromClass([self class]);
+    NSString *newName = [@&quot;YY&quot; stringByAppendingString:oldClassName];
+    const char *newClassName = [newName UTF8String];
+
+    Class newClass = objc_allocateClassPair([self class], newClassName, 0);
+    objc_registerClassPair(newClass);
+
+    class_addMethod(newClass, setterSelector, (IMP)YYKVO_setter_block, &quot;v@:@&quot;);
+    object_setClass(self, newClass);
+
+    NSDictionary *infoDic = @{@&quot;YYKOVObserver&quot; : observer, @&quot;block&quot;: block};
+    objc_setAssociatedObject(self, (__bridge const void *)@&quot;YYKVOInfo&quot;, infoDic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+void YYKVO_setter_block(id self, SEL _cmd, id newValue)
+{
+    NSString *setterName = NSStringFromSelector(_cmd);
+    NSString *getName = getterForSetter(setterName);
+
+    id oldValue = [self valueForKey:getName];
+
+    struct objc_super superClass = {
+
+        .receiver = self,
+        .super_class = class_getSuperclass([self class])
+    };
+    objc_msgSendSuper(&amp;superClass, _cmd, newValue);
+
+    id infoDic = objc_getAssociatedObject(self, (__bridge const void *)@&quot;YYKVOInfo&quot;);
+    id observer = [(NSDictionary *)infoDic objectForKey: @&quot;YYKOVObserver&quot;];
+    YYObserverBlock block = [(NSDictionary *)infoDic objectForKey: @&quot;block&quot;];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (block) {
+            block(observer, getName, oldValue, newValue);
+        }
+    });
+}
+</code></pre><blockquote>
+<p>代码中存在一些硬编码, 主要逻辑就是在添加观察的方法中, 把block和block需要的参数先关联保存起来, 在setter方法中调用block. </p>
+</blockquote>
 ]]></content>
     
     <summary type="html">
