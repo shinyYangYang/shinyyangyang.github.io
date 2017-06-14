@@ -9,7 +9,7 @@
 </li>
 </ol>
 <p>基本的使用方法不用多说了. 直接来介绍苹果的实现原理以及自实现的步骤.</p>
-<p>####苹果实现原理<br>当你注册观察一个对象时候, 一个新的继承于你观察的类被动态创建, 并且重写setter方法. 然后会把这个对象的isa指针指向新创建的类, 这个时候如果再改变其属性就会调用刚刚创建类的setter方法了. 这时候再在setter方法中存储属性的值和调用回调的方法.</p>
+<h2 id="苹果实现原理"><a href="#苹果实现原理" class="headerlink" title="苹果实现原理"></a>苹果实现原理</h2><p>当你注册观察一个对象时候, 一个新的继承于你观察的类被动态创建, 并且重写setter方法. 然后会把这个对象的isa指针指向新创建的类, 这个时候如果再改变其属性就会调用刚刚创建类的setter方法了. 这时候再在setter方法中存储属性的值和调用回调的方法.</p>
 <pre><code>- (void)YYKVO_addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
     // 获取setter方法
@@ -181,7 +181,35 @@ void YYKVO_setter_block(id self, SEL _cmd, id newValue)
 </code></pre><blockquote>
 <p>代码中存在一些硬编码, 主要逻辑就是在添加观察的方法中, 把block和block需要的参数先关联保存起来, 在setter方法中调用block. </p>
 </blockquote>
-</article><ul class="pager blog-pager"><li class="next"><a href="/2017/06/08/runtime在项目中的使用(一)/" data-toggle="tooltip" data-placement="top" title="runtime在项目中的使用(一)">Next Post →</a></li></ul><div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div><script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"> </script><script>var cloudTieConfig = {
+<pre><code>NSString * setterForGetter(NSString *getName)
+{
+    NSMutableString *setName = getName.mutableCopy;
+    if ([setName hasPrefix:@&quot;get&quot;]) {
+        [setName stringByReplacingOccurrencesOfString:@&quot;get&quot; withString:@&quot;&quot;];
+    }
+    NSString *replaceString = [NSString stringWithFormat:@&quot;set%@&quot;, [[setName substringWithRange:NSMakeRange(0, 1)] uppercaseString]];
+    [setName replaceCharactersInRange:NSMakeRange(0, 1) withString:replaceString];
+    [setName appendString:@&quot;:&quot;];
+    return setName.copy;
+}
+
+NSString * getterForSetter(NSString *setName)
+{
+    NSMutableString *getName = setName.mutableCopy;
+    if ([getName hasPrefix:@&quot;set&quot;]) {
+        [getName deleteCharactersInRange:NSMakeRange(0, 3)];
+    }
+    if ([getName containsString:@&quot;:&quot;]) {
+        [getName deleteCharactersInRange:NSMakeRange(getName.length - 1, 1)];
+    }
+    NSString *replaceString =  [[getName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
+    [getName replaceCharactersInRange:NSMakeRange(0, 1) withString:replaceString ];
+    return getName.copy;
+}
+</code></pre><blockquote>
+<p>这两个方法只是为了完成这个功能, 拼出set 和 get的方法名, 里面有一些硬编码的地方在项目中使用时候需要调整.</p>
+</blockquote>
+</article><ul class="pager blog-pager"><li class="next"><a href="/2017/06/08/runtime在项目中的使用(一)/" data-toggle="tooltip" data-placement="top" title="runtime在项目中的使用(一)">下一篇</a></li></ul><div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div><script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"> </script><script>var cloudTieConfig = {
   url: document.location.href, 
   sourceId: "",
   productKey: "b2936902a3964ebcbfb2b9b06b133401",
