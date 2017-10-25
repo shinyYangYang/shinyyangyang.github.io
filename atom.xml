@@ -353,6 +353,111 @@ struct objc_ivar {
   </entry>
   
   <entry>
+    <title>Manacher算法</title>
+    <link href="http://yoursite.com/2017/04/10/Manacher/"/>
+    <id>http://yoursite.com/2017/04/10/Manacher/</id>
+    <published>2017-04-10T07:31:28.000Z</published>
+    <updated>2017-10-25T14:44:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="求最长回文长度"><a href="#求最长回文长度" class="headerlink" title="求最长回文长度"></a>求最长回文长度</h1><h2 id="回文的定义"><a href="#回文的定义" class="headerlink" title="回文的定义:"></a>回文的定义:</h2><ul>
+<li><strong>aba; abba; 类似这种都算是回文.</strong></li>
+</ul>
+<h2 id="回文最大长度"><a href="#回文最大长度" class="headerlink" title="回文最大长度:"></a>回文最大长度:</h2><ul>
+<li><strong>aba 最大回文长度为3</strong> </li>
+<li><strong>abba 最大回文的长度为4</strong></li>
+<li><strong>abacaba 最大回文长度为7</strong> </li>
+</ul>
+<h1 id="Manacher"><a href="#Manacher" class="headerlink" title="Manacher "></a>Manacher </h1><h2 id="回文半径"><a href="#回文半径" class="headerlink" title="回文半径:"></a>回文半径:</h2><blockquote>
+<p>aba 以a为中心时候, 回文半径为1,只有a一个; b为中心时候回文半径为2;<br>因为有些回文是abba这种, 为了解决奇偶不确定性, 我们在所有字符的间插入一个特殊字符<strong>#</strong></p>
+<blockquote>
+<p>abba -&gt; #a#b#b#a#</p>
+</blockquote>
+<p><strong>这个时候我们来看每位的RL</strong></p>
+<blockquote>
+<p>aba -&gt; # a # b # a #</p>
+<p>   RL:&emsp;&emsp;1 2 1 4 1 2 1</p>
+<p>RL-1:&emsp;0 1 0 3 0 1 0</p>
+<p>abba -&gt; # a # b # b # a #</p>
+<p>   RL: &emsp;&emsp;1 2 1 2 5 2 1 2 1</p>
+<p>RL-1: &emsp;0 1 0 1 4 1 0 1 0</p>
+</blockquote>
+</blockquote>
+<p><strong>这里引入的RL-1 正好是未插入#时候的回文的长度</strong>, 所以现在问题转换为求RL.</p>
+<p><strong>重复访问的问题</strong></p>
+<blockquote>
+<p>利用回文的对称性, 可以减少一些字符串的对比过程. 为了更好的说明这些问题, 我们引入几个辅助变量MaxRight, 表示当前所有回子文串能触及的最右一个字符位置, Pos 表示MaxRight对应的中心位置.</p>
+</blockquote>
+<p><img src="./images/Manacher-1.png" alt=""></p>
+<blockquote>
+<p>假设我们现在开始访问, 访问到位置i, 因为pos之前的RL我们都求出来了, 所以下面分析三种情况:</p>
+</blockquote>
+<h2 id="1-当i在MaxRight的左边"><a href="#1-当i在MaxRight的左边" class="headerlink" title="1. 当i在MaxRight的左边:"></a>1. 当i在MaxRight的左边:</h2><p><img src="./images/Manacher-right.png" alt=""></p>
+<blockquote>
+<p>当我们要计算i位置的RL时, 我们先对比 i位置以pos为中点的对称位置J, 假设R[j]的整个包含在 MaxLeft 和 pos 之间, 那么说明R[i]至少等于R[J], 假如R[J]= 3, 那么i位置的2个字符可以不用比较了.</p>
+</blockquote>
+<h2 id="2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点"><a href="#2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点" class="headerlink" title="2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:"></a>2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:</h2><p><img src="./images/Manacher-right-outside.png" alt=""></p>
+<blockquote>
+<p>当RL[J]超过了MaxLeft, 只能确定，两条蓝线之间的部分（即不超过MaxRight的部分）是回文的. </p>
+</blockquote>
+<h2 id="3-当i在MaxRight的右边"><a href="#3-当i在MaxRight的右边" class="headerlink" title="3. 当i在MaxRight的右边:"></a>3. 当i在MaxRight的右边:</h2><p><img src="./images/Manacher-outside.png" alt=""></p>
+<blockquote>
+<p>当超过了maxRight之后, 就只能一个个判断了.</p>
+</blockquote>
+<h1 id="总体的步骤"><a href="#总体的步骤" class="headerlink" title="总体的步骤:"></a>总体的步骤:</h1><blockquote>
+<ul>
+<li>判断位置i有没有通过pos对应的点, 如果没有, 默认为1, 如果有取这个值与到边界值中小的值, 为默认值, 通过验证这块肯定是回文.</li>
+<li>以i为中心, 判断两边是否一样.<br>跟新pos, masRight;</li>
+</ul>
+</blockquote>
+<p><strong><em>python代码:</em></strong></p>
+<pre><code>def manacher(s):
+    #预处理
+    s=&apos;#&apos;+&apos;#&apos;.join(s)+&apos;#&apos;
+
+    RL=[0]*len(s)
+    MaxRight=0
+    pos=0
+    MaxLen=0
+    for i in range(len(s)):
+        if i&lt;MaxRight:
+            RL[i]=min(RL[2*pos-i], MaxRight-i)   #  i 和 j 关于pos点对称  RL[i] 至少和RL[J]一样   RL[J]在之前已经算过了
+        #比如 *a*b*a*
+        # 在移动到a的时候 RL[1] = 2  所以 在移动到第二个a的时候 pos = 3 b的位置 MaxRight = 6 最后一个*位置
+        # 这个时候我们可以知道  RL[5] 至少等于RL[1]  因为 两边是围绕pos对称的
+        # 但是 这是在 RL[1]位置的回文是在maxLeft(maxright关于pos的对称点)的范围内的 如果不在范围内则对比 maxright-i的范围 取小的部分 说明到边境的范围内的都是对称的
+        # 后面再扩展时候 这个范围内的 就不用比较了
+        else:
+            RL[i]=1
+
+        #尝试扩展，注意处理边界
+        while i-RL[i]&gt;=0 and i+RL[i]&lt;len(s) and s[i-RL[i]]==s[i+RL[i]]:
+            RL[i]+=1
+        # RL[i] 表示以i为中已经查找的回文的半径 这个时候既要考虑是不是小于了 起始位置 0  i-RL[i]&gt;=0 也要考虑到 是不是超过了终点位置 i+RL[i]&lt;len(s)
+        #如果在有效位置内  判断新的位置 对称的字符是不是一样
+
+
+        # 判断i位置达到的maxRight是不是超过了当前的maxRight 如果超过了 则替换
+        # 这里可以看出 替换后pos指向的不一定是最长回文的中心点了
+        #更新MaxRight,pos
+        if RL[i]+i-1&gt;MaxRight:
+            MaxRight=RL[i]+i-1
+            pos=i
+        #更新最长回文串的长度
+        MaxLen=max(MaxLen, RL[i])
+
+    return MaxLen-1
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;求最长回文长度&quot;&gt;&lt;a href=&quot;#求最长回文长度&quot; class=&quot;headerlink&quot; title=&quot;求最长回文长度&quot;&gt;&lt;/a&gt;求最长回文长度&lt;/h1&gt;&lt;h2 id=&quot;回文的定义&quot;&gt;&lt;a href=&quot;#回文的定义&quot; class=&quot;headerlink&quot; ti
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>LLVM</title>
     <link href="http://yoursite.com/2017/04/10/LLVM/"/>
     <id>http://yoursite.com/2017/04/10/LLVM/</id>
