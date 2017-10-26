@@ -25,28 +25,26 @@
 <p><strong>这里引入的RL-1 正好是未插入#时候的回文的长度</strong>, 所以现在问题转换为求RL.</p>
 <p><strong>重复访问的问题</strong></p>
 <blockquote>
-<p>利用回文的对称性, 可以减少一些字符串的对比过程. 为了更好的说明这些问题, 我们引入几个辅助变量MaxRight, 表示当前所有回子文串能触及的最右一个字符位置, Pos 表示MaxRight对应的中心位置.</p>
-</blockquote>
-<p><img src="./images/Manacher-1.png" alt=""></p>
-<blockquote>
+<p>利用回文的对称性, 可以减少一些字符串的对比过程. 为了更好的说明这些问题, 我们引入几个辅助变量MaxRight, 表示当前所有回子文串能触及的最右一个字符位置, Pos 表示MaxRight对应的中心位置.<br><img src="http://oyerwecki.bkt.clouddn.com/Manacher-1.png" alt=""></p>
 <p>假设我们现在开始访问, 访问到位置i, 因为pos之前的RL我们都求出来了, 所以下面分析三种情况:</p>
 </blockquote>
-<h2 id="1-当i在MaxRight的左边"><a href="#1-当i在MaxRight的左边" class="headerlink" title="1. 当i在MaxRight的左边:"></a>1. 当i在MaxRight的左边:</h2><p><img src="./images/Manacher-right.png" alt=""></p>
+<h2 id="1-当i在MaxRight的左边"><a href="#1-当i在MaxRight的左边" class="headerlink" title="1. 当i在MaxRight的左边:"></a>1. 当i在MaxRight的左边:</h2><p><img src="http://oyerwecki.bkt.clouddn.com/Manacher-right.png" alt=""></p>
 <blockquote>
 <p>当我们要计算i位置的RL时, 我们先对比 i位置以pos为中点的对称位置J, 假设R[j]的整个包含在 MaxLeft 和 pos 之间, 那么说明R[i]至少等于R[J], 假如R[J]= 3, 那么i位置的2个字符可以不用比较了.</p>
 </blockquote>
-<h2 id="2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点"><a href="#2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点" class="headerlink" title="2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:"></a>2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:</h2><p><img src="./images/Manacher-right-outside.png" alt=""></p>
+<h2 id="2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点"><a href="#2-当i在MaxRight的左边-但是RL-J-超过MaxRight的对称点" class="headerlink" title="2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:"></a>2. 当i在MaxRight的左边, 但是RL[J]超过MaxRight的对称点:</h2><p><img src="http://oyerwecki.bkt.clouddn.com/Manacher-right-outside.png" alt=""></p>
 <blockquote>
 <p>当RL[J]超过了MaxLeft, 只能确定，两条蓝线之间的部分（即不超过MaxRight的部分）是回文的. </p>
 </blockquote>
-<h2 id="3-当i在MaxRight的右边"><a href="#3-当i在MaxRight的右边" class="headerlink" title="3. 当i在MaxRight的右边:"></a>3. 当i在MaxRight的右边:</h2><p><img src="./images/Manacher-outside.png" alt=""></p>
+<h2 id="3-当i在MaxRight的右边"><a href="#3-当i在MaxRight的右边" class="headerlink" title="3. 当i在MaxRight的右边:"></a>3. 当i在MaxRight的右边:</h2><p><img src="http://oyerwecki.bkt.clouddn.com/Manacher-outside.png" alt=""></p>
 <blockquote>
 <p>当超过了maxRight之后, 就只能一个个判断了.</p>
 </blockquote>
 <h1 id="总体的步骤"><a href="#总体的步骤" class="headerlink" title="总体的步骤:"></a>总体的步骤:</h1><blockquote>
 <ul>
 <li>判断位置i有没有通过pos对应的点, 如果没有, 默认为1, 如果有取这个值与到边界值中小的值, 为默认值, 通过验证这块肯定是回文.</li>
-<li>以i为中心, 判断两边是否一样.<br>跟新pos, masRight;</li>
+<li>以i为中心, 判断两边是否一样.</li>
+<li>跟新pos, masRight;</li>
 </ul>
 </blockquote>
 <p><strong><em>python代码:</em></strong></p>
@@ -86,7 +84,8 @@
         MaxLen=max(MaxLen, RL[i])
 
     return MaxLen-1
-</code></pre></article><ul class="pager blog-pager"><li class="previous"><a href="/2017/04/10/自动集成/" data-toggle="tooltip" data-placement="top" title="自动集成">← Previous Post</a></li><li class="next"><a href="/2017/04/10/LLVM/" data-toggle="tooltip" data-placement="top" title="LLVM">Next Post →</a></li></ul><div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div><script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"> </script><script>var cloudTieConfig = {
+</code></pre><p><em>学习于 <a href="https://segmentfault.com/a/1190000003914228" target="_blank" rel="external">https://segmentfault.com/a/1190000003914228</a></em></p>
+</article><ul class="pager blog-pager"><li class="previous"><a href="/2017/04/10/LLVM/" data-toggle="tooltip" data-placement="top" title="LLVM">上一篇</a></li></ul><div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div><script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"> </script><script>var cloudTieConfig = {
   url: document.location.href, 
   sourceId: "",
   productKey: "b2936902a3964ebcbfb2b9b06b133401",
